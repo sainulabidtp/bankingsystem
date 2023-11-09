@@ -1,0 +1,50 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block header %}
+  <!-- bootstrap core css -->
+{% endblock %}
+{% block content %}
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+    // Function to update branch options based on the selected district
+    function updateBranches() {
+        var selectedDistrict = $('#id_district').val();
+
+        // Make an AJAX request to get branches for the selected district
+        $.ajax({
+            url: '/get-branches/',  // Replace with your actual URL for fetching branches
+            data: {'district': selectedDistrict},
+            dataType: 'json',
+            success: function (data) {
+                // Clear existing options
+                $('#id_branch').empty();
+
+                // Add new options based on the received data
+                $.each(data.branches, function (key, value) {
+                    $('#id_branch').append('<option value="' + key + '">' + value + '</option>');
+                });
+            }
+        });
+    }
+
+    // Attach the updateBranches function to the change event of the district field
+    $('#id_district').change(updateBranches);
+
+    // Call updateBranches initially to populate branches based on the default district
+    updateBranches();
+});
+</script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/membership.css' %}">
+<h1 style="color:white;"><center>Banking Application Form</center></h1>
+<div class="container"   >
+    <form method="post" style="color:orange;" class="custom-form form-check">
+        {% csrf_token %}
+        {{form.as_p}}
+        <input type="submit" value="Submit">
+    </form>
+    </div>
+<br>
+<br>
+{% endblock %}
